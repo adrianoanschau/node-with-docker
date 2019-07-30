@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    command: npm start
+    ports:
+      - 8000:3000
+    volumes:
+      - ./:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - postgres
+    environment:
+      DB_NAME: books
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DATABASE_URL: postgres://postgres@postgres/books
+    networks:
+      - my-network
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: "books"
+      POSTGRES_PASSWORD: "books"
+      POSTGRES_DB: "books"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./docker/postgres/data:/var/lib/postgresql/data
+    networks:
+      - my-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "adrianoanschau@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "postgres"
+    ports:
+      - 15432:80
+    depends_on:
+      - postgres
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
