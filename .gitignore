@@ -2,4 +2,4 @@ build
 docker
 node_modules
 .env
-.idea
+.idea/*
